@@ -3,29 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GitHub page as PWA template</title>
+  <title>ANTHROPICK</title>
   <link rel="canonical" href="https://puchito7u7.github.io/Anthropick/" />
   <link rel="manifest" href="/Anthropick/manifest.webmanifest">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
- 
-  <h1>GitHub page as PWA template</h1>
-  <p>
-    This is a PWA template for GitHub pages. 
-    Make sure to check the README at 
-    <a href="https://github.com/puchito7u7/Anthropick/">https://github.com/puchito7u7/Anthropick/</a> and 
-    to change the necessary settings to your needs.
-  </p>
 
-  <script>
-      if (navigator.serviceWorker) {
-        navigator.serviceWorker.register (
-          '/Anthropick',
-          {scope: '/Anthropick/'}
-        )
-      }
-  </script>
-  <script src="js/app.js"></script>
+    <h1>GitHub page as PWA template</h1>
+    <p>
+        This is a PWA template for GitHub pages.
+        Make sure to check the README at
+        <a href="https://github.com/puchito7u7/Anthropick/">https://github.com/puchito7u7/Anthropick/</a> and
+        to change the necessary settings to your needs.
+    </p>
+
+    <h1>Últimas noticias</h1>
+    <ul id="rss-feed"></ul>
+
+    <script>
+        // URL del feed RSS que deseas leer
+        const rssFeedUrl = 'https://anthropick.blogspot.com/feeds/posts/default?alt=rss';
+
+        // Elemento HTML donde mostrarás las entradas del feed
+        const rssFeedElement = document.getElementById('rss-feed');
+
+        // Función para obtener y mostrar el feed RSS
+        function mostrarFeed() {
+            fetch(rssFeedUrl)
+                .then(response => response.text())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(data, 'text/xml');
+                    const items = xmlDoc.querySelectorAll('item');
+
+                    items.forEach(item => {
+                        const title = item.querySelector('title').textContent;
+                        const link = item.querySelector('link').textContent;
+
+                        const listItem = document.createElement('li');
+                        const anchor = document.createElement('a');
+                        anchor.textContent = title;
+                        anchor.setAttribute('href', link);
+                        listItem.appendChild(anchor);
+
+                        rssFeedElement.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al cargar el feed RSS:', error);
+                });
+        }
+
+        // Llamar a la función para mostrar el feed RSS
+        mostrarFeed();
+    </script>
+
+    <script>
+        if (navigator.serviceWorker) {
+            navigator.serviceWorker.register(
+                '/Anthropick',
+                { scope: '/Anthropick/' }
+            )
+        }
+    </script>
+    <script src="js/app.js"></script>
 </body>
 </html>
